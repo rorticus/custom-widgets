@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Widget Test</title>
+    <script src="../../../../node_modules/@dojo/loader/loader.js"></script>
+</head>
+<body>
+<h1>Widget Test</h1>
+<div id="projector"></div>
+
+<script>
+    require.config({
+        packages: [
+            {name: 'maquette', location: '../../../../node_modules/maquette/dist', main: 'maquette' },
+            {name: '@dojo', location: '../../../../node_modules/@dojo'}
+        ]
+    });
+
+    require(['../../../src/projector'], function(createProjector) {
+        var app = createProjector.default({
+            root: document.getElementById('projector')
+        });
+        app.append();
+    });
+</script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 import createWidgetBase from '@dojo/widgets/createWidgetBase';
-import themable from '@dojo/widgets/mixins/themeable';
+import themeable, { Themeable } from '@dojo/widgets/mixins/themeable';
 import { DNode, Widget } from '@dojo/widgets/interfaces';
 import { v } from '@dojo/widgets/d';
 import { VNodeProperties } from '@dojo/interfaces/vdom';
@@ -10,13 +10,13 @@ export interface CallToActionProperties {
 	onClick?: (event?: MouseEvent) => void;
 }
 
-export type CallToActionWidget = Widget<CallToActionProperties> & {
+export type CallToActionWidget = Widget<CallToActionProperties> & Themeable<typeof styles> & {
 	onClick: (event?: MouseEvent) => void;
 };
 
-export default createWidgetBase.mixin({
+export default createWidgetBase.mixin(themeable).mixin({
 	mixin: {
-		classes: styles.callToActionContainer,
+		baseTheme: styles,
 		tagName: 'button',
 		onClick(this: CallToActionWidget, event?: MouseEvent) {
 			this.properties.onClick && this.properties.onClick.call(this, event);
@@ -27,7 +27,8 @@ export default createWidgetBase.mixin({
 				const { onClick: onclick } = this;
 
 				return {
-					onclick
+					onclick,
+					classes: this.theme.callToActionContainer
 				};
 			}
 		],
@@ -37,4 +38,4 @@ export default createWidgetBase.mixin({
 			];
 		}
 	}
-}).mixin(themable);
+});

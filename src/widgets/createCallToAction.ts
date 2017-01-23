@@ -1,7 +1,9 @@
 import createWidgetBase from '@dojo/widgets/createWidgetBase';
+import themable from '@dojo/widgets/mixins/themeable';
 import { DNode, Widget } from '@dojo/widgets/interfaces';
 import { v } from '@dojo/widgets/d';
 import { VNodeProperties } from '@dojo/interfaces/vdom';
+import * as styles from './styles/callToAction.css';
 
 export interface CallToActionProperties {
 	label?: string;
@@ -14,7 +16,7 @@ export type CallToActionWidget = Widget<CallToActionProperties> & {
 
 export default createWidgetBase.mixin({
 	mixin: {
-		classes: [ 'call-to-action' ],
+		classes: styles.callToActionContainer,
 		tagName: 'button',
 		onClick(this: CallToActionWidget, event?: MouseEvent) {
 			this.properties.onClick && this.properties.onClick.call(this, event);
@@ -35,4 +37,4 @@ export default createWidgetBase.mixin({
 			];
 		}
 	}
-});
+}).mixin(themable);

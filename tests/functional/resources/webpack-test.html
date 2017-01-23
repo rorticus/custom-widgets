@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="../../../../dist/main.css">
+    </head>
+    <body>
+
+    <h1>Sign Up now for your FREE TRIAL!</h1>
+
+    <call-to-action id="signUp" label="Sign Up Now!!!"></call-to-action>
+
+    <script src="../../../../dist/src/main.js"></script>
+    <script>
+        (function () {
+            var signUpButton = document.getElementById('signUp');
+            signUpButton.addEventListener('button-click', function () {
+                signUpButton.label = 'You Signed Up?!';
+            });
+        })();
+    </script>
+    </body>
+</html>

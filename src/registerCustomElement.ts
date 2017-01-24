@@ -48,7 +48,7 @@ export class CustomElement extends HTMLElement {
 		const self = this;
 		this.properties = {};
 
-		const { attributes = [], events = [] } = this.descriptor;
+		const { attributes = [], events = [], properties = [] } = this.descriptor;
 
 		attributes.forEach(attribute => {
 			const attributeName = attribute.attributeName;
@@ -67,6 +67,23 @@ export class CustomElement extends HTMLElement {
 				set(value: any) {
 					const [ propertyName, propertyValue ] = getWidgetPropertyFromAttribute(attribute.attributeName, value, attribute);
 					self.properties[ propertyName ] = propertyValue;
+					projector.invalidate();
+				}
+			};
+
+			return properties;
+		}, {}));
+
+		Object.defineProperties(this, properties.reduce((properties: PropertyDescriptorMap, property) => {
+			const { propertyName } = property;
+
+			properties[ propertyName ] = {
+				get() {
+					return properties[ propertyName ];
+				},
+
+				set(value: any) {
+					properties[ propertyName ] = value;
 					projector.invalidate();
 				}
 			};

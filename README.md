@@ -8,7 +8,7 @@ This is an example of one way Dojo 2 widgets can be used with custom elements.
 import createFoxWidget from 'fox-widget';
 import registerCustomElement from './registerCustomElement';
 
-registerCustomElement('fox-widget', createMyWidget, {
+registerCustomElement('fox-widget', createFoxWidget, {
     attributes: [
         {
             attributeName: 'label'
@@ -43,7 +43,7 @@ foxWidget.setAttribute('label', 'what does the fox say');
 You can explicitly map widget properties to DOM node attributes with the `attributes` array.
 
 ```ts
-registerCustomElement('fox-widget', createMyWidget, {
+registerCustomElement('fox-widget', createFoxWidget, {
     attributes: [
         {
             attributeName: 'label'
@@ -61,11 +61,61 @@ registerCustomElement('fox-widget', createMyWidget, {
 });
 ```
 
-`attributeName` refers to the attribute that will set on the DOM element, so, `<fox-widget label="test">`.
-`propertyName` refers to the property on the widget to set, and if not set, defaults to the `attributeName`.
-You can also specify a transformation function on the attribute value. This function should return the value that
+* `attributeName` refers to the attribute that will set on the DOM element, so, `<fox-widget label="test">`.
+* `propertyName` refers to the property on the widget to set, and if not set, defaults to the `attributeName`.
+* `value` lets you specify a transformation function on the attribute value. This function should return the value that
 will be set on the widget's property.
+
+Adding an attribute to the element will automatically add a corresponding property to the element as well.
+
+```ts
+// as an attribute
+foxWidget.setAttribute('label', 'fox');
+
+// as a property
+foxWidget.label = 'fox';
+```
 
 ### Properties
 
+You can map DOM element properties to widget properties,
+
+```ts
+registerCustomElement('fox-widget', createFoxWidget, {
+    properties: [
+        {
+            propertyName: 'species'
+        }
+    ]
+});
+
+// ...
+
+document.getElementsByTagName('fox-widget')[0].buttonType = 'value';
+```
+
+
 ### Events
+
+Some widgets have function properties, like events, that need to be exposed to your element. You can use the
+`events` array to map widget properties to DOM events.
+
+```ts
+registerCustomElement('fox-widget', createFoxWidget, {
+    events: [
+        {
+            propertyName: 'onFoxNoise',
+            eventName: 'fox-noise'
+        }
+    ]
+});
+```
+
+This will add a property to `onFoxNoise` that will emit the `fox-noise` custom event. You can listen like any other
+DOM event,
+
+```ts
+document.getElementsByTagName('fox-widget')[0].addEventListener('fox-noise', function (event) {
+    // do something
+});
+```

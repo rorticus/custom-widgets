@@ -105,10 +105,8 @@ export class CustomElement extends HTMLElement {
 
 		const projector = createProjector.mixin({
 			mixin: {
-				getChildrenNodes(): DNode[] {
-					return [
-						w(self.widget, self.properties)
-					];
+				getNode(): DNode {
+					return w(self.widget, self.properties);
 				}
 			}
 		})({

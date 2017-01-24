@@ -84,15 +84,21 @@ You can map DOM element properties to widget properties,
 registerCustomElement('fox-widget', createFoxWidget, {
     properties: [
         {
-            propertyName: 'species'
+            propertyName: 'foxType',
+            widgetPropertyName: 'species'
         }
     ]
 });
 
 // ...
 
-document.getElementsByTagName('fox-widget')[0].buttonType = 'value';
+document.getElementsByTagName('fox-widget')[0].foxType = 'Vulpes vulpes fulvus';
 ```
+
+* `propertyName` is the name of the property on the DOM element
+* `widgetPropertyName` is the name of the property on the widget. If unspecified, `propertyName` is used instead.
+* `getValue`, if specified, will be called with the widget's property value as an argument. The returned value is returned as the DOM element property value.
+* `setValue`, if specified, is called with the DOM elements property value. The returned value is used for the widget property's value.
 
 
 ### Events

@@ -2,6 +2,11 @@
 <html>
     <head>
         <link rel="import" href="../../../../dist/call-to-action.html">
+        <style type="text/css">
+            .green button {
+                background: green;
+            }
+        </style>
     </head>
     <body>
 
@@ -9,11 +14,20 @@
 
     <call-to-action id="signUp" label="Sign Up Now!!!"></call-to-action>
 
+    <p>
+        Click to toggle the above button <code>when</code> property!
+        <call-to-action id="toggle" class="green" label="Toggle"></call-to-action>
+    </p>
+
     <script>
         (function () {
             var signUpButton = document.getElementById('signUp');
             signUpButton.addEventListener('button-click', function () {
                 signUpButton.label = 'You Signed Up?!';
+            });
+
+            document.getElementById('toggle').addEventListener('button-click', function() {
+                signUpButton.when = signUpButton.when === 'Now!!!' ? 'Later?' : 'Now!!!';
             });
         })();
     </script>

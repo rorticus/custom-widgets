@@ -25,10 +25,15 @@ interface CustomElementEventDescriptor {
 	eventName: string;
 }
 
+interface CustomElementInitializer {
+	(this: CustomElement): void;
+}
+
 interface CustomElementDescriptor {
 	attributes?: CustomElementAttributeDescriptor[];
 	properties?: CustomElementPropertyDescriptor[];
 	events?: CustomElementEventDescriptor[];
+	initialization?: CustomElementInitializer;
 }
 
 function getWidgetPropertyFromAttribute(attributeName: string, attributeValue: string | null, descriptor: CustomElementAttributeDescriptor): [ string, any ] {
@@ -51,7 +56,7 @@ export class CustomElement extends HTMLElement {
 		const self = this;
 		this.properties = {};
 
-		const { attributes = [], events = [], properties = [] } = this.descriptor;
+		const { attributes = [], events = [], properties = [], initialization } = this.descriptor;
 
 		attributes.forEach(attribute => {
 			const attributeName = attribute.attributeName;
@@ -105,12 +110,16 @@ export class CustomElement extends HTMLElement {
 			const { propertyName, eventName } = event;
 
 			self.properties[ propertyName ] = (event: any) => {
-				event.stopImmediatePropagation();
 				self.dispatchEvent(new CustomEvent(eventName, {
+					bubbles: false,
 					detail: event
 				}));
 			};
 		});
+
+		if (initialization) {
+			initialization.call(this);
+		}
 
 		const projector = createProjector.mixin({
 			mixin: {

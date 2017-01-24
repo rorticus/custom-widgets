@@ -7,6 +7,7 @@ import * as styles from './styles/callToAction.css';
 
 export interface CallToActionProperties {
 	label?: string;
+	style?: 'blue' | 'green';
 	onClick?: (event?: MouseEvent) => void;
 }
 
@@ -26,9 +27,15 @@ export default createWidgetBase.mixin(themeable).mixin({
 			function (this: CallToActionWidget): VNodeProperties {
 				const { onClick: onclick } = this;
 
+				let classes: any = {};
+				Object.keys(this.theme.greenStyle).reduce((classes, className) => {
+					classes[ className ] = this.properties.style === 'green';
+					return classes;
+				}, classes);
+
 				return {
 					onclick,
-					classes: this.theme.callToActionContainer
+					classes: { ...this.theme.callToActionContainer, ...classes }
 				};
 			}
 		],

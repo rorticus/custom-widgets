@@ -2,34 +2,37 @@
 <html>
     <head>
         <link rel="import" href="../../../../dist/call-to-action.html">
-        <style type="text/css">
-            .green button {
-                background: green;
-            }
-        </style>
     </head>
-    <body>
-
-    <h1>Sign Up now for your FREE TRIAL!</h1>
-
-    <call-to-action id="signUp" label="Sign Up Now!!!"></call-to-action>
+    <h1>1-800-Llamas.com</h1>
 
     <p>
-        Click to toggle the above button <code>when</code> property!
-        <call-to-action id="toggle" class="green" label="Toggle"></call-to-action>
+        Looking to try a llama but not sure if you are ready to commit? It's easy, just
+        rent one of our high <strong>premium grade</strong> llamas and you'll be realizing your llama dreams,
+        without taking on any llama-risk!
     </p>
 
-    <script>
-        (function () {
-            var signUpButton = document.getElementById('signUp');
-            signUpButton.addEventListener('button-click', function () {
-                signUpButton.label = 'You Signed Up?!';
-            });
+    <h2>What are my options?</h2>
 
-            document.getElementById('toggle').addEventListener('button-click', function() {
-                signUpButton.when = signUpButton.when === 'Now!!!' ? 'Later?' : 'Now!!!';
+    <side-by-side id="buy-now">
+        <option price="$19.99" label="Starter Llama">
+            A starter llama is a great choice for those who are still unsure about llamaing. It's like a
+            regular llama, but less spitty.
+        </option>
+        <option price="$39.99" label="Average Llama">
+            Out most popular choice, this llama is great for beginners and amateurs alike! Has many
+            of the standard llama features, including, but not limited to: A face, legs, and hooves!
+        </option>
+        <option price="$79.99" label="Professional Llama">
+            For true llama enthusiasts. These llamas have all the properties of our other llamas, but are
+            faster, stronger, and can jump higher!
+        </option>
+    </side-by-side>
+
+    <script>
+        (function() {
+            document.getElementById('buy-now').addEventListener('option-selected', function(event) {
+                document.getElementById('buy-now').selected = event.detail;
             });
         })();
     </script>
-    </body>
 </html>

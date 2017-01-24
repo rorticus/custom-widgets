@@ -5,3 +5,7 @@
     border: 1px solid darkgrey;
     font-size: 18px;
 }
+
+.callToActionContainer.greenStyle {
+    background: linear-gradient(to bottom, #9dd53a 0%, #a1d54f 50%, #80c217 51%, #7cbc0a 100%);
+}

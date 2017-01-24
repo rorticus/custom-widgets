@@ -4,11 +4,37 @@
     <title>Widget Test</title>
 </head>
 <body>
-<h1>Widget Test</h1>
+<h1>1-800-Llamas.com</h1>
 
 <p>
-    Sign up now!
+    Looking to try a llama but not sure if you are ready to commit? It's easy, just
+    rent one of our high <strong>premium grade</strong> llamas and you'll be realizing your llama dreams,
+    without taking on any llama-risk!
 </p>
-<call-to-action label="Sign Up Now!"></call-to-action>
+
+<h2>What are my options?</h2>
+
+<side-by-side id="buy-now">
+    <option price="$19.99" label="Starter Llama">
+        A starter llama is a great choice for those who are still unsure about llamaing. It's like a
+        regular llama, but less spitty.
+    </option>
+    <option price="$39.99" label="Average Llama">
+        Out most popular choice, this llama is great for beginners and amateurs alike! Has many
+        of the standard llama features, including, but not limited to: A face, legs, and hooves!
+    </option>
+    <option price="$79.99" label="Professional Llama">
+        For true llama enthusiasts. These llamas have all the properties of our other llamas, but are
+        faster, stronger, and can jump higher!
+    </option>
+</side-by-side>
+
+<script>
+    (function() {
+        document.getElementById('buy-now').addEventListener('option-selected', function(event) {
+            document.getElementById('buy-now').selected = event.detail;
+        });
+    })();
+</script>
 </body>
 </html>

@@ -15,6 +15,9 @@ interface CustomElementAttributeDescriptor {
 
 interface CustomElementPropertyDescriptor {
 	propertyName: string;
+	widgetPropertyName?: string;
+	getValue?: (value: any) => any;
+	setValue?: (value: any) => any;
 }
 
 interface CustomElementEventDescriptor {
@@ -57,7 +60,9 @@ export class CustomElement extends HTMLElement {
 			this.properties[ propertyName ] = propertyValue;
 		});
 
-		Object.defineProperties(this, attributes.reduce((properties: PropertyDescriptorMap, attribute) => {
+		let customProperties: PropertyDescriptorMap = {};
+
+		attributes.reduce((properties, attribute) => {
 			const { propertyName = attribute.attributeName } = attribute;
 
 			properties[ propertyName ] = {
@@ -72,24 +77,28 @@ export class CustomElement extends HTMLElement {
 			};
 
 			return properties;
-		}, {}));
+		}, customProperties);
 
-		Object.defineProperties(this, properties.reduce((properties: PropertyDescriptorMap, property) => {
-			const { propertyName } = property;
+		properties.reduce((properties, property) => {
+			const { propertyName, getValue, setValue } = property;
+			const { widgetPropertyName = propertyName } = property;
 
 			properties[ propertyName ] = {
 				get() {
-					return properties[ propertyName ];
+					const value = self.properties[ widgetPropertyName ];
+					return getValue ? getValue(value) : value;
 				},
 
 				set(value: any) {
-					properties[ propertyName ] = value;
+					self.properties[ widgetPropertyName ] = setValue ? setValue(value) : value;
 					projector.invalidate();
 				}
 			};
 
 			return properties;
-		}, {}));
+		}, customProperties);
+
+		Object.defineProperties(this, customProperties);
 
 		// define events
 		events.forEach((event) => {

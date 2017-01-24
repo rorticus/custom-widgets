@@ -7,6 +7,22 @@ registerCustomElement('call-to-action', createCallToAction, {
 			attributeName: 'label'
 		}
 	],
+	properties: [
+		{
+			propertyName: 'when',
+			widgetPropertyName: 'label',
+			getValue: (label: string) => {
+				if (label.indexOf('Sign Up ') >= 0) {
+					return label.substring(label.indexOf('Sign Up ') + 'Sign Up '.length);
+				}
+
+				return '';
+			},
+			setValue: (action: string) => {
+				return 'Sign Up ' + action;
+			}
+		}
+	],
 	events: [
 		{
 			propertyName: 'onClick',

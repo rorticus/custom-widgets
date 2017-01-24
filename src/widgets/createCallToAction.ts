@@ -1,7 +1,7 @@
-import createWidgetBase from '@dojo/widgets/createWidgetBase';
-import themeable, { Themeable } from '@dojo/widgets/mixins/themeable';
-import { DNode, Widget } from '@dojo/widgets/interfaces';
-import { v } from '@dojo/widgets/d';
+import createWidgetBase from '@dojo/widget-core/createWidgetBase';
+import themeable, { Themeable } from '@dojo/widget-core/mixins/themeable';
+import { DNode, Widget } from '@dojo/widget-core/interfaces';
+import { v } from '@dojo/widget-core/d';
 import { VNodeProperties } from '@dojo/interfaces/vdom';
 import * as styles from './styles/callToAction.css';
 

@@ -1,6 +1,6 @@
-import createProjector from '@dojo/widgets/createProjector';
-import { DNode } from '@dojo/widgets/interfaces';
-import { w } from '@dojo/widgets/d';
+import createProjector from '@dojo/widget-core/createProjector';
+import { DNode } from '@dojo/widget-core/interfaces';
+import { w } from '@dojo/widget-core/d';
 import createCallToAction from './widgets/createCallToAction';
 
 export default createProjector.mixin({

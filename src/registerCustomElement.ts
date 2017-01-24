@@ -1,7 +1,7 @@
-import { WidgetFactory, DNode, WidgetProperties } from '@dojo/widgets/interfaces';
-import createProjector from '@dojo/widgets/createProjector';
-import { w } from '@dojo/widgets/d';
-import { Projector } from '@dojo/widgets/mixins/createProjectorMixin';
+import { WidgetFactory, DNode, WidgetProperties } from '@dojo/widget-core/interfaces';
+import createProjector from '@dojo/widget-core/createProjector';
+import { w } from '@dojo/widget-core/d';
+import { Projector } from '@dojo/widget-core/mixins/createProjectorMixin';
 
 declare namespace document {
 	function registerElement(name: string, constructor: any): Function;

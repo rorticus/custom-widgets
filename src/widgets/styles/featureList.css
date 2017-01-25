@@ -1,0 +1,20 @@
+.featureList {
+    border: 1px solid black;
+    display: block;
+    border-radius: 8px;
+    margin: 0;
+    padding: 0;
+}
+
+.featureList li {
+    padding: 8px;
+    margin: 0;
+    list-style-type: none;
+    border-bottom: 1px solid black;
+}
+
+.featureListLink {
+    border: none !important;
+    cursor: pointer;
+    font-weight: bold;
+}

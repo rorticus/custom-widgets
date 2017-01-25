@@ -1,7 +1,9 @@
-import { WidgetFactory, DNode, WidgetProperties } from '@dojo/widget-core/interfaces';
+import { WidgetFactory, DNode, WidgetProperties, Widget } from '@dojo/widget-core/interfaces';
 import createProjector from '@dojo/widget-core/createProjector';
 import { w } from '@dojo/widget-core/d';
 import { Projector } from '@dojo/widget-core/mixins/createProjectorMixin';
+import createWidget from '@dojo/widget-core/createWidgetBase';
+import { VNodeProperties } from '@dojo/interfaces/vdom';
 
 declare namespace document {
 	function registerElement(name: string, constructor: any): Function;
@@ -45,6 +47,34 @@ function getWidgetPropertyFromAttribute(attributeName: string, attributeValue: s
 
 	return [ propertyName, value ];
 }
+
+interface HTMLWrapperProperties {
+	domNode: HTMLElement;
+}
+
+type HTMLWrapper = Widget<HTMLWrapperProperties> & {
+	afterCreate: (element: Element) => void;
+};
+
+export const createHTMLWrapper = createWidget.mixin({
+	mixin: {
+		afterCreate(this: HTMLWrapper, element: Element) {
+			if (this.properties.domNode) {
+				element.appendChild(this.properties.domNode);
+				// element.parentNode!.replaceChild(this.properties.domNode, element);
+			}
+		},
+		nodeAttributes: [
+			function (this: HTMLWrapper): VNodeProperties {
+				const { afterCreate } = this;
+
+				return {
+					afterCreate
+				};
+			}
+		]
+	}
+});
 
 export class CustomElement extends HTMLElement {
 	widget: WidgetFactory<any, any>;
@@ -117,14 +147,34 @@ export class CustomElement extends HTMLElement {
 			};
 		});
 
+		// find children
+		let children: DNode[] = [];
+
+		Array.prototype.slice.call(this.children, 0).forEach((childNode: HTMLElement, index: number) => {
+			children.push(w(createHTMLWrapper, {
+				key: `child-${index}`,
+				domNode: childNode
+			}));
+		});
+
 		if (initialization) {
 			initialization.call(this);
 		}
 
+		Array.prototype.slice.call(this.children, 0).forEach((childNode: HTMLElement) => {
+			this.removeChild(childNode);
+		});
+
+		const mixedWidget = self.widget.mixin({
+			initialize(instance: any) {
+				instance.own(instance.on('properties:changed', self.onPropertiesChanged.bind(self)));
+			}
+		});
+
 		const projector = createProjector.mixin({
 			mixin: {
 				getNode(): DNode {
-					return w(self.widget, self.properties);
+					return w(mixedWidget, self.properties, children);
 				}
 			}
 		})({
@@ -133,6 +183,12 @@ export class CustomElement extends HTMLElement {
 
 		projector.append();
 		this.projector = projector;
+	}
+
+	onPropertiesChanged(event: any) {
+		event.changedPropertyKeys.forEach((key: string) => {
+			this.properties[key] = event.properties[key];
+		});
 	}
 
 	attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {

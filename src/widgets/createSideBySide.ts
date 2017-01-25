@@ -46,19 +46,20 @@ export default createWidgetBase.mixin(themeable).mixin({
 
 			return options.map((option, index) => {
 				return v('li', {
-					classes: toggleThemeClasses(this.theme.selected, this.properties.selected === index)
+					key: `option-${index}`,
+					classes: toggleThemeClasses(this.theme.sideBySideSelected, this.properties.selected === index)
 				}, [
 					v('label', {
-						classes: this.theme.price
+						classes: this.theme.sideBySidePrice
 					}, [ option.price ]),
 					v('p', {
-						classes: this.theme.label
+						classes: this.theme.sideBySideLabel
 					}, [ option.label ]),
 					v('p', {
-						classes: this.theme.description
+						classes: this.theme.sideBySideDescription
 					}, [ option.description ]),
 					w(createCallToAction, {
-						id: `option${index + 1}`,
+						key: `option-${index}`,
 						style: this.properties.selected === index ? 'green' : 'blue',
 						label: this.properties.selected === index ? 'Buy Now' : 'Select',
 						onClick: this.onOptionSelected.bind(this, index)

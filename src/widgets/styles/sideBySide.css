@@ -15,7 +15,7 @@
     text-align: center;
 }
 
-.sideBySideContainer li .price {
+.sideBySideContainer li .sideBySidePrice {
     font-size: 38px;
     text-align: center;
     display: block;
@@ -24,7 +24,7 @@
     color: green;
 }
 
-.sideBySideContainer li .label {
+.sideBySideContainer li .sideBySideLabel {
     margin: 0 0.5em;
     font-family: sans-serif;
     font-size: 14px;
@@ -33,7 +33,7 @@
     text-align: center;
 }
 
-.sideBySideContainer li .description {
+.sideBySideDescription {
     font-family: sans-serif;
     font-size: 13px;
     margin: 1em 0.5em;
@@ -45,6 +45,6 @@
     width: 100%;
 }
 
-.sideBySideContainer li.selected {
+.sideBySideSelected {
     background-color: lightyellow;
 }

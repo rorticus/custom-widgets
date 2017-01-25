@@ -2,14 +2,6 @@ import registerCustomElement from './registerCustomElement';
 import createSideBySide, { SideBySideEntry } from './widgets/createSideBySide';
 
 registerCustomElement('side-by-side', createSideBySide, {
-	attributes: [
-		{
-			attributeName: 'price'
-		},
-		{
-			attributeName: 'description'
-		}
-	],
 	properties: [
 		{
 			propertyName: 'options'

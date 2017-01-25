@@ -1,7 +1,6 @@
-import { WidgetFactory, DNode, WidgetProperties, Widget } from '@dojo/widget-core/interfaces';
-import createProjector from '@dojo/widget-core/createProjector';
+import { WidgetFactory, DNode, Widget, WidgetProperties } from '@dojo/widget-core/interfaces';
 import { w } from '@dojo/widget-core/d';
-import { Projector } from '@dojo/widget-core/mixins/createProjectorMixin';
+import createProjectorMixin, { Projector } from '@dojo/widget-core/mixins/createProjectorMixin';
 import createWidget from '@dojo/widget-core/createWidgetBase';
 import { VNodeProperties } from '@dojo/interfaces/vdom';
 
@@ -28,7 +27,7 @@ interface CustomElementEventDescriptor {
 }
 
 interface CustomElementInitializer {
-	(this: CustomElement): void;
+	(this: CustomElement, properties: WidgetProperties): void;
 }
 
 interface CustomElementDescriptor {
@@ -78,13 +77,13 @@ export const createHTMLWrapper = createWidget.mixin({
 
 export class CustomElement extends HTMLElement {
 	widget: WidgetFactory<any, any>;
+	instance: Widget<any>;
 	projector: Projector;
 	descriptor: CustomElementDescriptor;
-	properties: WidgetProperties;
 
 	createdCallback() {
 		const self = this;
-		this.properties = {};
+		let initialProperties: any = {};
 
 		const { attributes = [], events = [], properties = [], initialization } = this.descriptor;
 
@@ -92,7 +91,7 @@ export class CustomElement extends HTMLElement {
 			const attributeName = attribute.attributeName;
 
 			const [ propertyName, propertyValue ] = getWidgetPropertyFromAttribute(attributeName, self.getAttribute(attributeName), attribute);
-			this.properties[ propertyName ] = propertyValue;
+			initialProperties[ propertyName ] = propertyValue;
 		});
 
 		let customProperties: PropertyDescriptorMap = {};
@@ -102,12 +101,11 @@ export class CustomElement extends HTMLElement {
 
 			properties[ propertyName ] = {
 				get() {
-					return self.properties[ propertyName ];
+					return self.instance.properties[ propertyName ];
 				},
 				set(value: any) {
 					const [ propertyName, propertyValue ] = getWidgetPropertyFromAttribute(attribute.attributeName, value, attribute);
-					self.properties[ propertyName ] = propertyValue;
-					projector.invalidate();
+					self.instance.setProperties({ ... self.instance.properties, [propertyName]: propertyValue });
 				}
 			};
 
@@ -120,13 +118,15 @@ export class CustomElement extends HTMLElement {
 
 			properties[ propertyName ] = {
 				get() {
-					const value = self.properties[ widgetPropertyName ];
+					const value = self.instance.properties[ widgetPropertyName ];
 					return getValue ? getValue(value) : value;
 				},
 
 				set(value: any) {
-					self.properties[ widgetPropertyName ] = setValue ? setValue(value) : value;
-					projector.invalidate();
+					self.instance.setProperties({
+						...self.instance.properties,
+						[widgetPropertyName]: setValue ? setValue(value) : value
+					});
 				}
 			};
 
@@ -139,7 +139,7 @@ export class CustomElement extends HTMLElement {
 		events.forEach((event) => {
 			const { propertyName, eventName } = event;
 
-			self.properties[ propertyName ] = (event: any) => {
+			initialProperties[ propertyName ] = (event: any) => {
 				self.dispatchEvent(new CustomEvent(eventName, {
 					bubbles: false,
 					detail: event
@@ -158,44 +158,29 @@ export class CustomElement extends HTMLElement {
 		});
 
 		if (initialization) {
-			initialization.call(this);
+			initialization.call(this, initialProperties);
 		}
 
 		Array.prototype.slice.call(this.children, 0).forEach((childNode: HTMLElement) => {
 			this.removeChild(childNode);
 		});
 
-		const mixedWidget = self.widget.mixin({
-			initialize(instance: any) {
-				instance.own(instance.on('properties:changed', self.onPropertiesChanged.bind(self)));
-			}
-		});
-
-		const projector = createProjector.mixin({
-			mixin: {
-				getNode(): DNode {
-					return w(mixedWidget, self.properties, children);
-				}
-			}
-		})({
+		const widgetInstance = self.widget.mixin(createProjectorMixin)({
 			root: this
 		});
 
-		projector.append();
-		this.projector = projector;
-	}
+		widgetInstance.setProperties(initialProperties);
+		widgetInstance.setChildren(children);
+		widgetInstance.append();
 
-	onPropertiesChanged(event: any) {
-		event.changedPropertyKeys.forEach((key: string) => {
-			this.properties[key] = event.properties[key];
-		});
+		this.instance = widgetInstance;
 	}
 
 	attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
 		(this.descriptor.attributes || []).forEach((attribute) => {
 			if (attribute.attributeName === name) {
 				const [ propertyName, propertyValue ] = getWidgetPropertyFromAttribute(name, newValue, attribute);
-				this.properties[ propertyName ] = propertyValue;
+				this.instance.setProperties({ ... this.instance.properties, [propertyName]: propertyValue });
 			}
 		});
 

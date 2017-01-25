@@ -16,7 +16,7 @@ registerCustomElement('side-by-side', createSideBySide, {
 			eventName: 'option-selected'
 		}
 	],
-	initialization(this: any) {
+	initialization(this: any, properties) {
 		let options: SideBySideEntry[] = [];
 
 		Array.prototype.slice.call(this.getElementsByTagName('option'), 0).forEach((element: HTMLElement) => {
@@ -29,6 +29,6 @@ registerCustomElement('side-by-side', createSideBySide, {
 			element.parentNode!.removeChild(element);
 		});
 
-		this.properties.options = options;
+		properties['options'] = options;
 	}
 });

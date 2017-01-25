@@ -183,8 +183,6 @@ export class CustomElement extends HTMLElement {
 				this.instance.setProperties({ ... this.instance.properties, [propertyName]: propertyValue });
 			}
 		});
-
-		this.projector.invalidate();
 	}
 }
 

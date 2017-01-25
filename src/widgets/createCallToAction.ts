@@ -4,6 +4,7 @@ import { DNode, Widget } from '@dojo/widget-core/interfaces';
 import { v } from '@dojo/widget-core/d';
 import { VNodeProperties } from '@dojo/interfaces/vdom';
 import * as styles from './styles/callToAction.css';
+import { toggleThemeClasses } from '../util';
 
 export interface CallToActionProperties {
 	label?: string;
@@ -27,15 +28,9 @@ export default createWidgetBase.mixin(themeable).mixin({
 			function (this: CallToActionWidget): VNodeProperties {
 				const { onClick: onclick } = this;
 
-				let classes: any = {};
-				Object.keys(this.theme.greenStyle).reduce((classes, className) => {
-					classes[ className ] = this.properties.style === 'green';
-					return classes;
-				}, classes);
-
 				return {
 					onclick,
-					classes: { ...this.theme.callToActionContainer, ...classes }
+					classes: { ...this.theme.callToActionContainer, ...toggleThemeClasses(this.theme.greenStyle, this.properties.style === 'green') }
 				};
 			}
 		],

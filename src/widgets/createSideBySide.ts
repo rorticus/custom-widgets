@@ -5,6 +5,7 @@ import { w, v } from '@dojo/widget-core/d';
 import { VNodeProperties } from '@dojo/interfaces/vdom';
 import * as styles from './styles/sideBySide.css';
 import createCallToAction from './createCallToAction';
+import { toggleThemeClasses } from '../util';
 
 export interface SideBySideEntry {
 	price: string;
@@ -45,10 +46,7 @@ export default createWidgetBase.mixin(themeable).mixin({
 
 			return options.map((option, index) => {
 				return v('li', {
-					classes: Object.keys(this.theme.selected).reduce((classes: any, className) => {
-						classes[ className ] = this.properties.selected === index;
-						return classes;
-					}, {})
+					classes: toggleThemeClasses(this.theme.selected, this.properties.selected === index)
 				}, [
 					v('label', {
 						classes: this.theme.price

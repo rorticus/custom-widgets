@@ -27,7 +27,7 @@ You can then proceed to use `<fox-widget>` like any other custom element.
 
 ```html
 <div>
-    <fox-widget label="what does the fox say"></fox-widget>
+    <fox-widget label="what does the fox say" />
 </div>
 ```
 
@@ -123,5 +123,26 @@ DOM event,
 ```ts
 document.getElementsByTagName('fox-widget')[0].addEventListener('fox-noise', function (event) {
     // do something
+});
+```
+### Initialization
+
+Custom logic can be performed after properties/attributes have been defined but before the projector is created. This
+allows you full control over your widget, allowing you to add custom properties, event handlers, work with child nodes, etc.
+The initialization function is run from the context of the HTML element.
+
+```ts
+registerCustomelement('fox-widget', createFoxWidget, {
+    initialization() {
+        const footer = this.getElementsByTagName('footer');
+        if (footer) {
+            this.properties.footer = footer;
+        }
+
+        const header = this.getElementsByTagName('header');
+        if (header) {
+            this.properties.header = header;
+        }
+    }
 });
 ```

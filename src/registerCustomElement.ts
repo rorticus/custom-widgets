@@ -1,56 +1,8 @@
-import { WidgetFactory, Widget } from '@dojo/widget-core/interfaces';
 import { initializeElement, CustomElementDescriptor, handleAttributeChanged } from './customElements';
+import registerCustomElementV1 from './customElementV1';
 
 declare namespace document {
 	function registerElement(name: string, constructor: any): Function;
-}
-
-declare namespace customElements {
-	function define(name: string, constructor: any): void;
-}
-
-export abstract class CustomElement extends HTMLElement {
-	instance: Widget<any>;
-
-	abstract getWidgetFactory(): WidgetFactory<any, any>;
-
-	abstract getDescriptor(): CustomElementDescriptor;
-
-	constructor() {
-		super();
-
-		initializeElement<any, any>(this);
-	}
-
-	getWidgetInstance() {
-		return this.instance;
-	}
-
-	setWidgetInstance(instance: Widget<any>) {
-		this.instance = instance;
-	}
-
-	attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
-		handleAttributeChanged(this, name, newValue, oldValue);
-	}
-}
-
-export function registerCustomElementV1(tagName: string, widget: any, descriptor: CustomElementDescriptor = {}) {
-	customElements.define(tagName, class extends CustomElement {
-		static get observedAttributes() {
-			return (descriptor.attributes || []).map((attribute) => {
-				return attribute.attributeName;
-			});
-		}
-
-		getWidgetFactory(): WidgetFactory<any, any> {
-			return widget;
-		}
-
-		getDescriptor(): CustomElementDescriptor {
-			return descriptor;
-		}
-	});
 }
 
 export function registerCustomElementV0(tagName: string, widget: any, descriptor: CustomElementDescriptor = {}) {

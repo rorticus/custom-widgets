@@ -41,6 +41,16 @@ export interface CustomElement<W extends Widget<P>, P> extends HTMLElement {
 	setWidgetInstance(instance: W): void;
 }
 
+function assign(target: any, ...objs: any[]): any {
+	objs.forEach((obj) => {
+		Object.keys(obj).forEach((key) => {
+			target[ key ] = obj[ key ];
+		});
+	});
+
+	return target;
+}
+
 function getWidgetPropertyFromAttribute(attributeName: string, attributeValue: string | null, descriptor: CustomElementAttributeDescriptor): [ string, any ] {
 	let { propertyName = attributeName, value = attributeValue } = descriptor;
 
@@ -64,7 +74,6 @@ export const createHTMLWrapper = createWidget.mixin({
 		afterCreate(this: HTMLWrapper, element: Element) {
 			if (this.properties.domNode) {
 				element.appendChild(this.properties.domNode);
-				// element.parentNode!.replaceChild(this.properties.domNode, element);
 			}
 		},
 		nodeAttributes: [
@@ -102,7 +111,7 @@ export function initializeElement<W extends Widget<P>, P extends WidgetPropertie
 			},
 			set(value: any) {
 				const [ propertyName, propertyValue ] = getWidgetPropertyFromAttribute(attribute.attributeName, value, attribute);
-				element.getWidgetInstance().setProperties(Object.assign({}, element.getWidgetInstance().properties, {
+				element.getWidgetInstance().setProperties(assign({}, element.getWidgetInstance().properties, {
 					[propertyName]: propertyValue
 				}));
 			}
@@ -122,7 +131,7 @@ export function initializeElement<W extends Widget<P>, P extends WidgetPropertie
 			},
 
 			set(value: any) {
-				element.getWidgetInstance().setProperties(Object.assign(
+				element.getWidgetInstance().setProperties(assign(
 					{},
 					element.getWidgetInstance().properties,
 					{ [widgetPropertyName]: setValue ? setValue(value) : value }
@@ -180,7 +189,7 @@ export function handleAttributeChanged<W extends Widget<P>, P extends WidgetProp
 	(element.getDescriptor().attributes || []).forEach((attribute) => {
 		if (attribute.attributeName === name) {
 			const [ propertyName, propertyValue ] = getWidgetPropertyFromAttribute(name, newValue, attribute);
-			element.getWidgetInstance().setProperties(Object.assign(
+			element.getWidgetInstance().setProperties(assign(
 				{},
 				element.getWidgetInstance().properties,
 				{ [propertyName]: propertyValue }

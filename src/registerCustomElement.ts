@@ -1,5 +1,5 @@
 import { WidgetFactory, Widget } from '@dojo/widget-core/interfaces';
-import { initializeElement, CustomElementDescriptor, handleAttributeChanged } from './customElements';
+import { initializeElement, CustomElementDescriptor, handleAttributeChanged, CustomElement } from './customElements';
 
 declare namespace document {
 	function registerElement(name: string, constructor: any): Function;
@@ -9,48 +9,45 @@ declare namespace customElements {
 	function define(name: string, constructor: any): void;
 }
 
-export abstract class CustomElement extends HTMLElement {
-	instance: Widget<any>;
-
-	abstract getWidgetFactory(): WidgetFactory<any, any>;
-
-	abstract getDescriptor(): CustomElementDescriptor;
-
-	constructor() {
-		super();
-
-		initializeElement<any, any>(this);
-	}
-
-	getWidgetInstance() {
-		return this.instance;
-	}
-
-	setWidgetInstance(instance: Widget<any>) {
-		this.instance = instance;
-	}
-
-	attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
-		handleAttributeChanged(this, name, newValue, oldValue);
-	}
-}
-
 export function registerCustomElementV1(tagName: string, widget: any, descriptor: CustomElementDescriptor = {}) {
-	customElements.define(tagName, class extends CustomElement {
-		static get observedAttributes() {
-			return (descriptor.attributes || []).map((attribute) => {
-				return attribute.attributeName;
-			});
-		}
+	let widgetInstance: Widget<any>;
 
-		getWidgetFactory(): WidgetFactory<any, any> {
-			return widget;
-		}
+	function CustomElement(this: HTMLElement) {
+		let self = HTMLElement.constructor.call(this);
+		initializeElement<any, any>(<any> this);
+		return self;
+	}
 
-		getDescriptor(): CustomElementDescriptor {
-			return descriptor;
+	CustomElement.prototype = Object.create(HTMLElement.prototype, {
+		constructor: { value: CustomElement },
+		getWidgetFactory: {
+			value: () => {
+				return widget;
+			}
+		},
+		getDescriptor: {
+			value: () => {
+				return descriptor;
+			}
+		},
+		getWidgetInstance: {
+			value: () => {
+				return widgetInstance;
+			}
+		},
+		setWidgetInstance: {
+			value: (widget: Widget<any>) => {
+				widgetInstance = widget;
+			}
+		},
+		attributeChangedCallback: {
+			value: function (this: any, name: string, oldValue: string | null, newValue: string | null) {
+				handleAttributeChanged(this, name, newValue, oldValue);
+			}
 		}
 	});
+
+	customElements.define(tagName, CustomElement);
 }
 
 export function registerCustomElementV0(tagName: string, widget: any, descriptor: CustomElementDescriptor = {}) {
@@ -98,4 +95,4 @@ export function registerCustomElementV0(tagName: string, widget: any, descriptor
 }
 
 
-export default registerCustomElementV1;
+export default registerCustomElementV0;

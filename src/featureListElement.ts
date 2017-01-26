@@ -1,7 +1,7 @@
-import registerCustomElement from './registerCustomElement';
+import { registerCustomElementV0 } from './registerCustomElement';
 import createFeatureList from './widgets/createFeatureList';
 
-registerCustomElement('feature-list', createFeatureList, {
+registerCustomElementV0('feature-list', createFeatureList, {
 	attributes: [
 		{
 			attributeName: 'limit',

@@ -37,6 +37,11 @@ export abstract class CustomElement extends HTMLElement {
 
 export function registerCustomElementV1(tagName: string, widget: any, descriptor: CustomElementDescriptor = {}) {
 	customElements.define(tagName, class extends CustomElement {
+		static get observedAttributes() {
+			return (descriptor.attributes || []).map((attribute) => {
+				return attribute.attributeName;
+			});
+		}
 
 		getWidgetFactory(): WidgetFactory<any, any> {
 			return widget;

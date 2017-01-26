@@ -2,12 +2,17 @@ import registerCustomElement from './registerCustomElement';
 import createSideBySide, { SideBySideEntry } from './widgets/createSideBySide';
 
 registerCustomElement('side-by-side', createSideBySide, {
+	attributes: [
+		{
+			attributeName: 'selected',
+			value(val: string | null) {
+				return parseInt(val || '', 10);
+			}
+		}
+	],
 	properties: [
 		{
 			propertyName: 'options'
-		},
-		{
-			propertyName: 'selected'
 		}
 	],
 	events: [

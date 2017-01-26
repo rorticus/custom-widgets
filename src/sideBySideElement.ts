@@ -6,7 +6,7 @@ registerCustomElement('side-by-side', createSideBySide, {
 		{
 			attributeName: 'selected',
 			value(val: string | null) {
-				return parseInt(val || '', 10);
+				return val !== null ? parseInt(val, 10) : null;
 			}
 		}
 	],

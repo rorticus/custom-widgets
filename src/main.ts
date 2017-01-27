@@ -1,3 +1,8 @@
-import './callToActionElement';
-import './sideBySideElement';
-import './featureListElement';
+import createCallToActionElementDescriptor from './widgets/createCallToActionElementDescriptor';
+import createSideBySideElementDescriptor from './widgets/createSideBySideElementDescriptor';
+import createFeatureListElementDescriptor from './widgets/createFeatureListElementDescriptor';
+import registerCustomElement from './registerCustomElement';
+
+registerCustomElement(createCallToActionElementDescriptor);
+registerCustomElement(createSideBySideElementDescriptor);
+registerCustomElement(createFeatureListElementDescriptor);

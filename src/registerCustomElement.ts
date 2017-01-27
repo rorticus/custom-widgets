@@ -1,5 +1,5 @@
-import { WidgetFactory, Widget } from '@dojo/widget-core/interfaces';
-import { initializeElement, CustomElementDescriptor, handleAttributeChanged, CustomElement } from './customElements';
+import { Widget } from '@dojo/widget-core/interfaces';
+import { initializeElement, CustomElementDescriptor, handleAttributeChanged } from '@dojo/widget-core/customElements';
 
 declare namespace document {
 	function registerElement(name: string, constructor: any): Function;
@@ -9,12 +9,16 @@ declare namespace customElements {
 	function define(name: string, constructor: any): void;
 }
 
-export function registerCustomElementV1(tagName: string, widget: any, descriptor: CustomElementDescriptor = {}) {
+export interface CustomElementDescriptorFactory {
+	(): CustomElementDescriptor;
+}
+
+export function registerCustomElementV1(tagName: string, widget: any, descriptor: CustomElementDescriptor) {
 	let widgetInstance: Widget<any>;
 
 	function CustomElement(this: HTMLElement) {
 		let self = HTMLElement.constructor.call(this);
-		initializeElement<any, any>(<any> this);
+		initializeElement(<any> this);
 		return self;
 	}
 
@@ -50,8 +54,11 @@ export function registerCustomElementV1(tagName: string, widget: any, descriptor
 	customElements.define(tagName, CustomElement);
 }
 
-export function registerCustomElementV0(tagName: string, widget: any, descriptor: CustomElementDescriptor = {}) {
+export function registerCustomElementV0(descriptorFactory: CustomElementDescriptorFactory) {
 	let widgetInstance: any = null;
+
+	const descriptor = descriptorFactory();
+	const { tagName, widgetFactory } = descriptor;
 
 	return document.registerElement(tagName, {
 		prototype: Object.create(HTMLElement.prototype, {
@@ -69,7 +76,7 @@ export function registerCustomElementV0(tagName: string, widget: any, descriptor
 
 			getWidgetFactory: {
 				value: function () {
-					return widget;
+					return widgetFactory;
 				}
 			},
 
@@ -93,6 +100,5 @@ export function registerCustomElementV0(tagName: string, widget: any, descriptor
 		})
 	});
 }
-
 
 export default registerCustomElementV0;

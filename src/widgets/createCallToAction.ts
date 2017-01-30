@@ -1,8 +1,7 @@
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import themeable, { Themeable } from '@dojo/widget-core/mixins/themeable';
-import { DNode, Widget } from '@dojo/widget-core/interfaces';
+import { Widget } from '@dojo/widget-core/interfaces';
 import { v } from '@dojo/widget-core/d';
-import { VNodeProperties } from '@dojo/interfaces/vdom';
 import * as styles from './styles/callToAction.css';
 import { toggleThemeClasses } from '../util';
 
@@ -19,25 +18,21 @@ export type CallToActionWidget = Widget<CallToActionProperties> & Themeable<type
 export default createWidgetBase.mixin(themeable).mixin({
 	mixin: {
 		baseTheme: styles,
-		tagName: 'button',
 		onClick(this: CallToActionWidget, event?: MouseEvent) {
 			this.properties.onClick && this.properties.onClick.call(this, event);
-		},
+		}
+	}
+}).aspect({
+	after: {
+		render(this: CallToActionWidget) {
+			const { onClick: onclick } = this;
 
-		nodeAttributes: [
-			function (this: CallToActionWidget): VNodeProperties {
-				const { onClick: onclick } = this;
-
-				return {
-					onclick,
-					classes: { ...this.theme.callToActionContainer, ...toggleThemeClasses(this.theme.greenStyle, this.properties.style === 'green') }
-				};
-			}
-		],
-		getChildrenNodes(this: CallToActionWidget): DNode[] {
-			return [
+			return v('button', {
+				onclick,
+				classes: { ...this.theme.callToActionContainer, ...toggleThemeClasses(this.theme.greenStyle, this.properties.style === 'green') }
+			}, [
 				v('label', [ this.properties.label || '' ])
-			];
+			]);
 		}
 	}
 });

@@ -1,11 +1,12 @@
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import themeable, { Themeable } from '@dojo/widget-core/mixins/themeable';
 import { DNode, Widget } from '@dojo/widget-core/interfaces';
-import { w, v } from '@dojo/widget-core/d';
+import { w, v, isHNode } from '@dojo/widget-core/d';
 import { VNodeProperties } from '@dojo/interfaces/vdom';
 import * as styles from './styles/sideBySide.css';
 import createCallToAction from './createCallToAction';
 import { toggleThemeClasses } from '../util';
+import { assign } from '@dojo/core/lang';
 
 export interface SideBySideEntry {
 	price: string;
@@ -28,16 +29,6 @@ export default createWidgetBase.mixin(themeable).mixin({
 		baseTheme: styles,
 		tagName: 'ul',
 
-		nodeAttributes: [
-			function (this: SideBySideWidget): VNodeProperties {
-				const { onClick: onclick } = this;
-
-				return {
-					onclick,
-					classes: this.theme.sideBySideContainer
-				};
-			}
-		],
 		onOptionSelected(this: SideBySideWidget, index: number) {
 			this.properties.onOptionSelected && this.properties.onOptionSelected(index);
 		},
@@ -66,6 +57,17 @@ export default createWidgetBase.mixin(themeable).mixin({
 					})
 				]);
 			});
+		}
+	}
+}).aspect({
+	after: {
+		render(this: SideBySideWidget) {
+			const { onClick: onclick } = this;
+
+			return v('ul', {
+				onclick,
+				classes: this.theme.sideBySideContainer
+			}, this.getChildrenNodes());
 		}
 	}
 });

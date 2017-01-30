@@ -58,4 +58,12 @@ export default createWidgetBase.mixin(themeable).mixin({
 			return childNodes;
 		}
 	}
+}).aspect({
+	after: {
+		render(this: FeatureList) {
+			return v('ul', {
+				classes: this.theme.featureList
+			}, this.getChildrenNodes());
+		}
+	}
 });

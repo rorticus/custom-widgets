@@ -1,7 +1,7 @@
 import createCallToActionElementDescriptor from './widgets/createCallToActionElementDescriptor';
 import createSideBySideElementDescriptor from './widgets/createSideBySideElementDescriptor';
 import createFeatureListElementDescriptor from './widgets/createFeatureListElementDescriptor';
-import registerCustomElement from './registerCustomElement';
+import registerCustomElement from '@dojo/widget-core/registerCustomElements';
 import createProjector from '@dojo/widget-core/createProjector';
 import { DNode } from '@dojo/widget-core/interfaces';
 import { w } from '@dojo/widget-core/d';

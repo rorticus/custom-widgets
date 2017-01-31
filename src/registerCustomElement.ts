@@ -1,4 +1,4 @@
-import { Widget } from '@dojo/widget-core/interfaces';
+import { Widget, WidgetFactory } from '@dojo/widget-core/interfaces';
 import { initializeElement, CustomElementDescriptor, handleAttributeChanged } from '@dojo/widget-core/customElements';
 
 declare namespace document {
@@ -13,45 +13,44 @@ export interface CustomElementDescriptorFactory {
 	(): CustomElementDescriptor;
 }
 
-export function registerCustomElementV1(tagName: string, widget: any, descriptor: CustomElementDescriptor) {
-	let widgetInstance: Widget<any>;
+abstract class CustomElementV1 extends HTMLElement {
+	widgetInstance: Widget<any>;
 
-	function CustomElement(this: HTMLElement) {
-		let self = HTMLElement.constructor.call(this);
-		initializeElement(<any> this);
-		return self;
+	constructor() {
+		super();
+
+		initializeElement(this);
 	}
 
-	CustomElement.prototype = Object.create(HTMLElement.prototype, {
-		constructor: { value: CustomElement },
-		getWidgetFactory: {
-			value: () => {
-				return widget;
-			}
-		},
-		getDescriptor: {
-			value: () => {
-				return descriptor;
-			}
-		},
-		getWidgetInstance: {
-			value: () => {
-				return widgetInstance;
-			}
-		},
-		setWidgetInstance: {
-			value: (widget: Widget<any>) => {
-				widgetInstance = widget;
-			}
-		},
-		attributeChangedCallback: {
-			value: function (this: any, name: string, oldValue: string | null, newValue: string | null) {
-				handleAttributeChanged(this, name, newValue, oldValue);
-			}
+	attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
+		handleAttributeChanged(this, name, newValue, oldValue);
+	}
+
+	getWidgetInstance(): Widget<any> {
+		return this.widgetInstance;
+	}
+
+	setWidgetInstance(widget: Widget<any>): void {
+		this.widgetInstance = widget;
+	}
+
+	getWidgetFactory(): WidgetFactory<any, any> {
+		return this.getDescriptor().widgetFactory;
+	}
+
+	getDescriptor(): CustomElementDescriptor {
+		return this.getDescriptor();
+	}
+}
+
+export function registerCustomElementV1(descriptorFactory: CustomElementDescriptorFactory) {
+	const descriptor = descriptorFactory();
+
+	customElements.define(descriptor.tagName, class extends CustomElementV1 {
+		getDescriptor() {
+			return descriptor;
 		}
 	});
-
-	customElements.define(tagName, CustomElement);
 }
 
 export function registerCustomElementV0(descriptorFactory: CustomElementDescriptorFactory) {
@@ -101,4 +100,4 @@ export function registerCustomElementV0(descriptorFactory: CustomElementDescript
 	});
 }
 
-export default registerCustomElementV0;
+export default registerCustomElementV1;

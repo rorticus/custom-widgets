@@ -3,7 +3,6 @@ import themeable, { Themeable } from '@dojo/widget-core/mixins/themeable';
 import { Widget } from '@dojo/widget-core/interfaces';
 import { v } from '@dojo/widget-core/d';
 import * as styles from './styles/callToAction.css';
-import { toggleThemeClasses } from '../util';
 
 export interface CallToActionProperties {
 	label?: string;
@@ -11,13 +10,13 @@ export interface CallToActionProperties {
 	onClick?: (event?: MouseEvent) => void;
 }
 
-export type CallToActionWidget = Widget<CallToActionProperties> & Themeable<typeof styles> & {
+export type CallToActionWidget = Widget<CallToActionProperties> & Themeable & {
 	onClick: (event?: MouseEvent) => void;
 };
 
 export default createWidgetBase.mixin(themeable).mixin({
 	mixin: {
-		baseTheme: styles,
+		baseClasses: styles,
 		onClick(this: CallToActionWidget, event?: MouseEvent) {
 			this.properties.onClick && this.properties.onClick.call(this, event);
 		}
@@ -27,9 +26,15 @@ export default createWidgetBase.mixin(themeable).mixin({
 		render(this: CallToActionWidget) {
 			const { onClick: onclick } = this;
 
+			let classes = [ styles.callToActionContainer ];
+
+			if (this.properties.style === 'green') {
+				classes.push(styles.greenStyle);
+			}
+
 			return v('button', {
 				onclick,
-				classes: { ...this.theme.callToActionContainer, ...toggleThemeClasses(this.theme.greenStyle, this.properties.style === 'green') }
+				classes: this.classes(...classes).get()
 			}, [
 				v('label', [ this.properties.label || '' ])
 			]);

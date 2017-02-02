@@ -11,7 +11,7 @@ interface FeatureListProperties {
 	expanded?: boolean;
 }
 
-type FeatureList = Widget<FeatureListProperties> & Themeable<typeof styles> & {
+type FeatureList = Widget<FeatureListProperties> & Themeable & {
 	onExpand: () => void;
 	onCollapse: () => void;
 };
@@ -19,11 +19,11 @@ type FeatureList = Widget<FeatureListProperties> & Themeable<typeof styles> & {
 export default createWidgetBase.mixin(themeable).mixin({
 	mixin: {
 		tagName: 'ul',
-		baseTheme: styles,
+		baseClasses: styles,
 		nodeAttributes: [
 			function (this: FeatureList): VNodeProperties {
 				return {
-					classes: this.theme.featureList
+					classes: this.classes(styles.featureList).get()
 				};
 			}
 		],
@@ -43,7 +43,7 @@ export default createWidgetBase.mixin(themeable).mixin({
 				childNodes.push(v('li', {
 					key: 'see-less',
 					onclick: this.onCollapse,
-					classes: this.theme.featureListLink
+					classes: this.classes(styles.featureListLink).get()
 				}, [ 'See less...' ]));
 			}
 			else {
@@ -51,7 +51,7 @@ export default createWidgetBase.mixin(themeable).mixin({
 				childNodes.push(v('li', {
 					key: 'see-more',
 					onclick: this.onExpand,
-					classes: this.theme.featureListLink
+					classes: this.classes(styles.featureListLink).get()
 				}, [ 'See more...' ]));
 			}
 
@@ -62,7 +62,7 @@ export default createWidgetBase.mixin(themeable).mixin({
 	after: {
 		render(this: FeatureList) {
 			return v('ul', {
-				classes: this.theme.featureList
+				classes: this.classes(styles.featureList).get()
 			}, this.getChildrenNodes());
 		}
 	}

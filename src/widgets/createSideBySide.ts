@@ -1,12 +1,9 @@
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import themeable, { Themeable } from '@dojo/widget-core/mixins/themeable';
 import { DNode, Widget } from '@dojo/widget-core/interfaces';
-import { w, v, isHNode } from '@dojo/widget-core/d';
-import { VNodeProperties } from '@dojo/interfaces/vdom';
+import { w, v } from '@dojo/widget-core/d';
 import * as styles from './styles/sideBySide.css';
 import createCallToAction from './createCallToAction';
-import { toggleThemeClasses } from '../util';
-import { assign } from '@dojo/core/lang';
 
 export interface SideBySideEntry {
 	price: string;
@@ -20,13 +17,13 @@ export interface SideBySideProperties {
 	onOptionSelected?: (optionIndex: number) => void;
 }
 
-export type SideBySideWidget = Widget<SideBySideProperties> & Themeable<typeof styles> & {
+export type SideBySideWidget = Widget<SideBySideProperties> & Themeable & {
 	onOptionSelected: (event?: MouseEvent) => void;
 };
 
 export default createWidgetBase.mixin(themeable).mixin({
 	mixin: {
-		baseTheme: styles,
+		baseClasses: styles,
 		tagName: 'ul',
 
 		onOptionSelected(this: SideBySideWidget, index: number) {
@@ -36,18 +33,23 @@ export default createWidgetBase.mixin(themeable).mixin({
 			const { options = [] } = this.properties;
 
 			return options.map((option, index) => {
+				let classes = [];
+				if (this.properties.selected === index) {
+					classes.push(styles.sideBySideSelected);
+				}
+
 				return v('li', {
 					key: `option-${index}`,
-					classes: toggleThemeClasses(this.theme.sideBySideSelected, this.properties.selected === index)
+					classes: this.classes(...classes).get()
 				}, [
 					v('label', {
-						classes: this.theme.sideBySidePrice
+						classes: this.classes(styles.sideBySidePrice).get()
 					}, [ option.price ]),
 					v('p', {
-						classes: this.theme.sideBySideLabel
+						classes: this.classes(styles.sideBySideLabel).get()
 					}, [ option.label ]),
 					v('p', {
-						classes: this.theme.sideBySideDescription
+						classes: this.classes(styles.sideBySideDescription).get()
 					}, [ option.description ]),
 					w(createCallToAction, {
 						key: `option-${index}`,
@@ -66,7 +68,7 @@ export default createWidgetBase.mixin(themeable).mixin({
 
 			return v('ul', {
 				onclick,
-				classes: this.theme.sideBySideContainer
+				classes: this.classes(styles.sideBySideContainer).get()
 			}, this.getChildrenNodes());
 		}
 	}

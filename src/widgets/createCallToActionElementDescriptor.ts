@@ -1,10 +1,10 @@
-import createCallToAction from './createCallToAction';
+import CallToAction from './CallToAction';
 import { CustomElementDescriptor } from '@dojo/widget-core/customElements';
 
 export default function createCallToActionElementDescriptor(): CustomElementDescriptor {
 	return {
 		tagName: 'call-to-action',
-		widgetFactory: createCallToAction,
+		widgetConstructor: CallToAction,
 		attributes: [
 			{
 				attributeName: 'label'

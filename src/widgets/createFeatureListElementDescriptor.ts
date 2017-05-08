@@ -1,10 +1,10 @@
-import createFeatureList from './createFeatureList';
+import FeatureList from './FeatureList';
 import { CustomElementDescriptor } from '@dojo/widget-core/customElements';
 
 export default function createFeatureListCustomElement(): CustomElementDescriptor {
 	return {
 		tagName: 'feature-list',
-		widgetFactory: createFeatureList,
+		widgetConstructor: FeatureList,
 		attributes: [
 			{
 				attributeName: 'limit',

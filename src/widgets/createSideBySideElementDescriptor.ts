@@ -1,10 +1,10 @@
-import createSideBySide, { SideBySideEntry } from './createSideBySide';
+import SideBySide, { SideBySideEntry } from './SideBySide';
 import { CustomElementDescriptor } from '@dojo/widget-core/customElements';
 
 export default function createSideBySideElementDescriptor(): CustomElementDescriptor {
 	return {
 		tagName: 'side-by-side',
-		widgetFactory: createSideBySide,
+		widgetConstructor: SideBySide,
 		attributes: [
 			{
 				attributeName: 'selected',
